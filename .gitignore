@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+
+# Local data & temp files
+temp_data/
+*.zip
+*.jpeg
+*.jpg
+*.pdf
+
+# Editor configs
+.vscode/
+.idea/
+.gemini/
