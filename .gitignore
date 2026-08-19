@@ -1,20 +1,31 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.venv/
+*.py[cod]
+*$py.class
+
+# Virtual environments
 venv/
-ENV/
+env/
+.venv/
+.env_venv/
 
-# Local data & temp files
-temp_data/
-*.zip
-*.jpeg
-*.jpg
-*.pdf
+# Environment variables
+.env
+.env.local
 
-# Editor configs
+# Application Data (Do not commit user PDFs or generated JPEGs)
+uploads/
+output/
+
+# Logs
+*.log
+logs/
+
+# IDE / OS files
 .vscode/
 .idea/
-.gemini/
+.DS_Store
+Thumbs.db
+
+# rembg cache (where models are downloaded)
+.u2net/

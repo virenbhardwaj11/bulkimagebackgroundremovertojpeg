@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Background Removal Studio</title>
+  <meta name="description" content="Bulk PDF to white-background JPEG converter with AI-powered background removal">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <circle cx="12" cy="15" r="3"></circle>
+          </svg>
+        </div>
+        <div>
+          <h1>PDF Background Removal Studio</h1>
+          <p class="tagline">AI-Powered Bulk Processing · Python Backend</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-green">⚡ Local &amp; Private</span>
+        <span class="badge badge-blue">🤖 BiRefNet AI</span>
+        <span class="badge badge-purple">🐍 Python</span>
+      </div>
+    </header>
+
+    <!-- Upload Section -->
+    <section id="upload-section" class="section">
+      <div id="drop-zone" class="drop-zone">
+        <div class="drop-zone-inner">
+          <div class="upload-icon-wrap">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <h2>Drop PDF Files Here</h2>
+          <p>Or click to select · Supports 24–30+ PDFs at once</p>
+          <input type="file" id="file-input" accept=".pdf" multiple hidden>
+          <button id="browse-btn" class="btn btn-primary" type="button">Browse Files</button>
+        </div>
+      </div>
+
+      <!-- File List -->
+      <div id="file-list-wrap" class="file-list-wrap hidden">
+        <div class="file-list-header">
+          <h3 id="file-count-label">0 PDFs selected</h3>
+          <div class="file-list-actions">
+            <button id="clear-btn" class="btn btn-ghost btn-sm" type="button">Clear All</button>
+            <button id="start-btn" class="btn btn-accent btn-sm" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Start Processing
+            </button>
+          </div>
+        </div>
+        <ul id="file-list" class="file-list"></ul>
+      </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section id="progress-section" class="section hidden">
+      <div class="progress-card">
+        <div class="progress-header">
+          <h2>Processing</h2>
+          <span id="progress-status" class="status-badge">Scanning…</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="progress-stats">
+          <div class="stat">
+            <span class="stat-label">PDFs</span>
+            <span id="stat-pdfs" class="stat-value">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Pages</span>
+            <span id="stat-pages" class="stat-value">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Processed</span>
+            <span id="stat-processed" class="stat-value">0 / 0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Progress</span>
+            <span id="stat-percent" class="stat-value">0%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Speed</span>
+            <span id="stat-speed" class="stat-value">–</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Errors</span>
+            <span id="stat-errors" class="stat-value">0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results / Gallery Section -->
+    <section id="results-section" class="section hidden">
+      <div class="results-header">
+        <div class="results-header-left">
+          <h2>Results <span id="results-count"></span></h2>
+          <label class="select-all-label">
+            <input type="checkbox" id="select-all-cb">
+            <span>Select All</span>
+          </label>
+        </div>
+        <div class="results-actions">
+          <button id="rotate-selected-btn" class="btn btn-ghost btn-sm" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            Rotate Selected 180°
+          </button>
+          <button id="download-all-btn" class="btn btn-accent">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download All (ZIP)
+          </button>
+        </div>
+      </div>
+      <div id="gallery" class="gallery"></div>
+    </section>
+
+    <!-- Reprocess Modal -->
+    <div id="reprocess-modal" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Reprocess Image</h3>
+          <button id="modal-close" class="btn-icon" type="button">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-preview">
+            <div class="modal-img-wrap">
+              <p class="modal-img-label">Original</p>
+              <img id="modal-original-img" src="" alt="Original">
+            </div>
+            <div class="modal-img-wrap">
+              <p class="modal-img-label">Processed</p>
+              <img id="modal-processed-img" src="" alt="Processed">
+            </div>
+          </div>
+          <div class="modal-controls">
+            <div class="control-row">
+              <label for="ctrl-alpha">Alpha Matting</label>
+              <input type="checkbox" id="ctrl-alpha" checked>
+            </div>
+            <div class="control-row">
+              <label for="ctrl-fg">Foreground Threshold</label>
+              <input type="range" id="ctrl-fg" min="200" max="280" value="270" step="5">
+              <span id="ctrl-fg-val">270</span>
+            </div>
+            <div class="control-row">
+              <label for="ctrl-bg">Background Threshold</label>
+              <input type="range" id="ctrl-bg" min="5" max="60" value="20" step="5">
+              <span id="ctrl-bg-val">20</span>
+            </div>
+            <div class="control-row">
+              <label for="ctrl-erode">Erode Size</label>
+              <input type="range" id="ctrl-erode" min="3" max="25" value="11" step="2">
+              <span id="ctrl-erode-val">11</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="modal-reprocess-btn" class="btn btn-accent">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            Reprocess
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pymupdf
+rembg[cpu]
+pillow
+numpy
+opencv-python-headless
+aiofiles
+sse-starlette
+python-dotenv
